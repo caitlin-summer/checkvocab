@@ -9,81 +9,218 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
+:root{
+  --bg:#f4f6fb;
+  --surface:#ffffff;
+  --ink:#0f172a;
+  --ink-2:#475569;
+  --ink-3:#94a3b8;
+  --line:#e5e9f2;
+  --line-2:#d6dcec;
+  --primary:#4f46e5;
+  --primary-600:#4338ca;
+  --primary-50:#eef2ff;
+  --primary-100:#e0e7ff;
+  --green:#059669;
+  --green-50:#ecfdf5;
+  --red:#e11d48;
+  --red-50:#fff1f2;
+  --amber:#d97706;
+  --amber-50:#fffbeb;
+  --violet:#7c3aed;
+  --violet-50:#f5f3ff;
+  --radius:16px;
+  --shadow-sm:0 1px 2px rgba(15,23,42,.04),0 1px 3px rgba(15,23,42,.06);
+  --shadow-md:0 4px 6px -2px rgba(15,23,42,.04),0 12px 28px -6px rgba(79,70,229,.12);
+  --shadow-lg:0 20px 40px -12px rgba(79,70,229,.25);
+}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Lexend',sans-serif;min-height:100vh;background:linear-gradient(135deg,#e8f0fe 0%,#f0f4ff 50%,#dce8fb 100%);color:#1a2744}
-header{background:linear-gradient(90deg,#1a3a8f 0%,#2563eb 100%);color:#fff;padding:15px 28px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 4px 20px rgba(37,99,235,.25)}
-.logo{font-size:22px;font-weight:800;letter-spacing:-.5px}
-.subtitle{font-size:11px;opacity:.75;font-weight:300;margin-top:1px}
-main{max-width:880px;margin:0 auto;padding:24px 14px}
-.card{background:#fff;border-radius:14px;box-shadow:0 4px 24px rgba(37,99,235,.09);padding:24px;margin-bottom:16px}
-.section-title{font-size:15px;font-weight:700;margin-bottom:13px;color:#1e3a8a}
-input[type=text],textarea,select{width:100%;border:1.5px solid #c7d6f7;border-radius:8px;padding:8px 12px;font-family:'Lexend',sans-serif;font-size:13px;outline:none;background:#f7f9ff;transition:border .15s}
-input[type=text]:focus,textarea:focus,select:focus{border-color:#2563eb}
-textarea{resize:vertical}
-.btn{border:none;border-radius:8px;padding:8px 16px;font-family:'Lexend',sans-serif;font-size:13px;cursor:pointer;font-weight:600;transition:opacity .15s;color:#fff;display:inline-flex;align-items:center;gap:6px}
-.btn:hover{opacity:.87}.btn:disabled{opacity:.4;cursor:not-allowed}
-.btn-blue{background:#2563eb}.btn-green{background:#16a34a}.btn-red{background:#ef4444}.btn-amber{background:#d97706}
-.btn-outline{background:transparent;color:#2563eb;border:2px solid #2563eb;border-radius:8px;padding:6px 14px;font-family:'Lexend',sans-serif;font-size:13px;cursor:pointer;font-weight:600}
-.btn-outline:hover{background:#eff6ff}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:'Lexend',system-ui,sans-serif;min-height:100vh;color:var(--ink);
+  background:
+    radial-gradient(900px 420px at 85% -10%,rgba(99,102,241,.14),transparent 60%),
+    radial-gradient(700px 380px at -5% 10%,rgba(56,189,248,.12),transparent 60%),
+    var(--bg);
+  background-attachment:fixed;
+  line-height:1.5;
+}
+
+/* ───── Header ───── */
+header{
+  position:sticky;top:0;z-index:50;
+  background:rgba(255,255,255,.82);
+  backdrop-filter:saturate(180%) blur(14px);
+  -webkit-backdrop-filter:saturate(180%) blur(14px);
+  border-bottom:1px solid var(--line);
+}
+.hdr-inner{max-width:920px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.brand-mark{
+  width:42px;height:42px;border-radius:12px;flex-shrink:0;
+  background:linear-gradient(135deg,#6366f1,#4338ca);
+  display:grid;place-items:center;color:#fff;
+  box-shadow:0 6px 16px -4px rgba(79,70,229,.55);
+}
+.brand-mark svg{width:22px;height:22px}
+.logo{font-size:19px;font-weight:700;letter-spacing:-.4px;color:var(--ink);line-height:1.1}
+.logo span{color:var(--primary)}
+.subtitle{font-size:12px;color:var(--ink-2);font-weight:400;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+main{max-width:920px;margin:0 auto;padding:28px 20px 60px}
+
+/* ───── Cards ───── */
+.card{
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+  box-shadow:var(--shadow-sm);padding:24px;margin-bottom:18px;
+}
+.section-title{
+  display:flex;align-items:center;gap:10px;
+  font-size:15px;font-weight:600;margin-bottom:14px;color:var(--ink);
+}
+.section-title .num{
+  width:24px;height:24px;border-radius:8px;background:var(--primary-50);color:var(--primary);
+  display:grid;place-items:center;font-size:12px;font-weight:700;
+}
+
+/* ───── Inputs ───── */
+input[type=text],textarea,select{
+  width:100%;border:1.5px solid var(--line-2);border-radius:10px;padding:10px 13px;
+  font-family:inherit;font-size:14px;color:var(--ink);outline:none;background:#fff;
+  transition:border-color .15s,box-shadow .15s,background .15s;
+}
+input[type=text]::placeholder,textarea::placeholder{color:var(--ink-3)}
+input[type=text]:hover,textarea:hover{border-color:#b9c3de}
+input[type=text]:focus,textarea:focus,select:focus{border-color:var(--primary);box-shadow:0 0 0 4px rgba(79,70,229,.14)}
+textarea{resize:vertical;line-height:1.6}
+code{background:var(--primary-50);color:var(--primary-600);padding:1px 6px;border-radius:5px;font-size:11.5px}
+
+/* ───── Buttons ───── */
+.btn{
+  border:none;border-radius:10px;padding:9px 16px;font-family:inherit;font-size:13px;cursor:pointer;
+  font-weight:600;color:#fff;display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  transition:transform .12s,box-shadow .15s,background .15s,opacity .15s;white-space:nowrap;
+}
+.btn:hover{transform:translateY(-1px)}
+.btn:active{transform:translateY(0)}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.btn-blue{background:var(--primary);box-shadow:0 4px 12px -3px rgba(79,70,229,.5)}
+.btn-blue:hover{background:var(--primary-600)}
+.btn-green{background:var(--green);box-shadow:0 4px 12px -3px rgba(5,150,105,.45)}
+.btn-green:hover{background:#047857}
+.btn-red{background:var(--red-50);color:var(--red);border:1px solid #fecdd3}
+.btn-red:hover{background:#ffe4e6}
+.btn-amber{background:var(--amber-50);color:var(--amber);border:1px solid #fde68a}
+.btn-amber:hover{background:#fef3c7}
+.btn-violet{background:var(--violet);box-shadow:0 4px 12px -3px rgba(124,58,237,.45)}
+.btn-violet:hover{background:#6d28d9}
+.btn-lg{padding:11px 20px;font-size:14px}
+.btn-outline{
+  background:#fff;color:var(--ink-2);border:1.5px solid var(--line-2);border-radius:10px;padding:9px 16px;
+  font-family:inherit;font-size:13px;cursor:pointer;font-weight:600;transition:all .15s;
+  display:inline-flex;align-items:center;gap:6px;
+}
+.btn-outline:hover{border-color:var(--primary);color:var(--primary);background:var(--primary-50)}
+
 .flex{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.lbl{font-size:11px;color:#64748b;margin-bottom:4px;font-weight:500}
-.tag{display:inline-flex;align-items:center;gap:5px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:6px;padding:3px 9px;margin:3px;font-size:13px;color:#1e3a8a}
-.tag .del{cursor:pointer;color:#ef4444;font-weight:700;font-size:15px;line-height:1;margin-left:1px}
-.tag .meaning-badge{background:#dbeafe;border-radius:4px;padding:1px 6px;font-size:11px;color:#1e40af}
-.set-card{background:#fff;border-radius:12px;border:1.5px solid #dbeafe;padding:15px 18px;margin-bottom:11px;display:flex;align-items:center;justify-content:space-between;gap:12px;box-shadow:0 2px 10px rgba(37,99,235,.06)}
-.set-info{flex:1;min-width:0}
-.set-name{font-weight:700;font-size:15px;color:#1e3a8a;margin-bottom:3px}
-.set-meta{font-size:11px;color:#64748b;margin-bottom:7px}
-.chips{display:flex;flex-wrap:wrap}
-.chip{background:#eff6ff;border:1px solid #bfdbfe;border-radius:4px;padding:1px 7px;margin:2px;font-size:11px;color:#1e3a8a}
-.err{background:#fef2f2;color:#b91c1c;border-radius:8px;padding:7px 12px;margin-top:7px;font-size:12px}
-.info-box{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:10px 13px;font-size:12px;color:#1e40af;margin-top:8px}
-.divider{border-top:1.5px solid #dbeafe;padding-top:14px;margin-top:14px}
-.empty-state{text-align:center;padding:50px 20px}
-.view{display:none}.view.active{display:block}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid3{display:grid;grid-template-columns:2fr 1fr 1fr;gap:14px}
+.lbl{font-size:12px;color:var(--ink-2);margin-bottom:6px;font-weight:500}
 
-/* Editable word table */
-.wtable{width:100%;border-collapse:collapse;font-size:13px}
-.wtable thead tr{background:#f0f4ff}
-.wtable th{padding:8px 10px;text-align:left;font-weight:700;color:#1e3a8a;border-bottom:2px solid #dbeafe;font-size:12px}
-.wtable tbody tr:hover{background:#f7f9ff}
-.wnum{text-align:center;color:#94a3b8;font-size:12px;padding:6px 4px;width:36px;font-weight:500}
-.wcell{padding:5px 6px}
-.wactions{padding:5px 6px;white-space:nowrap}
-.winput{width:100%;border:1.5px solid #e2e8f0;border-radius:6px;padding:7px 10px;font-family:'Lexend',sans-serif;font-size:13px;outline:none;background:#fff;transition:border .15s}
-.winput:focus{border-color:#2563eb;background:#f7f9ff}
-.meaning-in{color:#1e40af}
-.wbtn{border:none;border-radius:5px;padding:5px 7px;cursor:pointer;font-size:12px;font-weight:700;transition:opacity .15s}
+/* ───── Misc ───── */
+.err{background:var(--red-50);color:#be123c;border:1px solid #fecdd3;border-radius:10px;padding:9px 13px;margin-top:10px;font-size:13px}
+.info-box{
+  background:var(--primary-50);border:1px solid var(--primary-100);border-radius:12px;
+  padding:12px 15px;font-size:12.5px;color:#3730a3;line-height:1.7;
+}
+.divider{border-top:1px dashed var(--line-2);padding-top:16px;margin-top:18px}
+.view{display:none}
+.view.active{display:block;animation:fadeUp .35s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* ───── Home ───── */
+.home-top{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:18px;flex-wrap:wrap}
+.home-title{font-size:22px;font-weight:700;letter-spacing:-.4px}
+.home-count{font-size:13px;color:var(--ink-2);margin-top:2px}
+.set-card{
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 20px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:16px;
+  box-shadow:var(--shadow-sm);transition:transform .18s,box-shadow .18s,border-color .18s;
+  position:relative;overflow:hidden;
+}
+.set-card::before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:4px;
+  background:linear-gradient(180deg,#6366f1,#38bdf8);opacity:.9;
+}
+.set-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);border-color:var(--primary-100)}
+.set-info{flex:1;min-width:0;padding-left:6px}
+.set-name{font-weight:600;font-size:16px;color:var(--ink);margin-bottom:6px;overflow:hidden;text-overflow:ellipsis}
+.set-meta{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:500;color:var(--ink-2);background:#f1f5f9;border-radius:999px;padding:3px 10px}
+.pill.ok{background:var(--green-50);color:#047857}
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+.chip{background:var(--primary-50);color:#3730a3;border-radius:6px;padding:2px 9px;font-size:12px;font-weight:500}
+.chip-more{font-size:12px;color:var(--ink-3);padding:2px 4px}
+.set-actions{display:flex;gap:8px;flex-shrink:0}
+.empty-state{text-align:center;padding:56px 20px;border-style:dashed;border-width:2px;border-color:var(--line-2);box-shadow:none;background:rgba(255,255,255,.7)}
+.empty-ico{width:72px;height:72px;margin:0 auto 16px;border-radius:20px;background:var(--primary-50);display:grid;place-items:center;font-size:34px}
+
+/* ───── Editable word table ───── */
+.table-scroll{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+.wtable{width:100%;border-collapse:collapse;font-size:13px;min-width:560px}
+.wtable thead tr{background:#f8fafc}
+.wtable th{padding:10px 10px;text-align:left;font-weight:600;color:var(--ink-2);border-bottom:1px solid var(--line);font-size:11.5px;text-transform:uppercase;letter-spacing:.6px}
+.wtable tbody tr{border-bottom:1px solid #f1f5f9;transition:background .12s}
+.wtable tbody tr:last-child{border-bottom:none}
+.wtable tbody tr:hover{background:#fafbff}
+.wnum{text-align:center;color:var(--ink-3);font-size:12px;padding:6px 4px;width:40px;font-weight:600}
+.wcell{padding:6px 6px}
+.wactions{padding:6px 8px;white-space:nowrap}
+.winput{
+  width:100%;border:1.5px solid transparent;border-radius:8px;padding:8px 10px;font-family:inherit;font-size:13.5px;
+  outline:none;background:#f8fafc;transition:all .15s;color:var(--ink);
+}
+.winput:hover{background:#f1f5f9}
+.winput:focus{border-color:var(--primary);background:#fff;box-shadow:0 0 0 3px rgba(79,70,229,.12)}
+.meaning-in{color:#3730a3}
+.wbtn{border:none;border-radius:7px;width:28px;height:28px;cursor:pointer;font-size:13px;font-weight:700;transition:all .15s;display:inline-grid;place-items:center}
 .wbtn:disabled{opacity:.25;cursor:not-allowed}
-.wbtn-up,.wbtn-dn{background:#e0e7ff;color:#3730a3}
-.wbtn-del{background:#fee2e2;color:#b91c1c;margin-left:2px}
-.wbtn:not(:disabled):hover{opacity:.75}
+.wbtn-up,.wbtn-dn{background:#eef2ff;color:#4338ca}
+.wbtn-del{background:var(--red-50);color:var(--red);margin-left:3px}
+.wbtn:not(:disabled):hover{transform:scale(1.1)}
 
-/* Mode toggle */
-.mode-toggle{display:flex;background:#f0f4ff;border-radius:10px;padding:4px;gap:4px;margin-bottom:16px}
-.mode-btn{flex:1;padding:8px 10px;border:none;border-radius:7px;font-family:'Lexend',sans-serif;font-size:12px;font-weight:600;cursor:pointer;background:transparent;color:#64748b;transition:all .2s}
-.mode-btn.active{background:#fff;color:#1e3a8a;box-shadow:0 2px 8px rgba(37,99,235,.15)}
+/* ───── Mode toggle ───── */
+.mode-toggle{display:grid;grid-template-columns:1fr 1fr;background:#eef1f8;border-radius:12px;padding:4px;gap:4px;margin-bottom:6px}
+.mode-btn{
+  padding:11px 12px;border:none;border-radius:9px;font-family:inherit;font-size:12.5px;font-weight:500;cursor:pointer;
+  background:transparent;color:var(--ink-2);transition:all .2s;line-height:1.4;text-align:center;
+}
+.mode-btn:hover:not(.active){color:var(--ink);background:rgba(255,255,255,.5)}
+.mode-btn.active{background:#fff;color:var(--primary-600);font-weight:600;box-shadow:0 2px 8px rgba(79,70,229,.18)}
 
-/* Loading overlay */
-#loading{position:fixed;inset:0;background:rgba(255,255,255,.85);display:none;align-items:center;justify-content:center;flex-direction:column;gap:14px;z-index:9999;backdrop-filter:blur(3px)}
+.shuffle-box{
+  margin-top:12px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
+  background:var(--violet-50);border:1px solid #ddd6fe;border-radius:12px;padding:11px 15px;
+}
+.shuffle-box label{display:flex;align-items:center;gap:9px;cursor:pointer;font-size:13px;font-weight:600;color:#5b21b6;user-select:none}
+.shuffle-box input[type=checkbox]{width:17px;height:17px;cursor:pointer;accent-color:var(--violet)}
+.col-box{margin-top:14px;background:var(--green-50);border:1px solid #a7f3d0;border-radius:12px;padding:14px 16px}
+.col-box-title{font-size:12.5px;font-weight:600;color:#065f46;margin-bottom:10px}
+
+/* ───── Loading ───── */
+#loading{position:fixed;inset:0;background:rgba(244,246,251,.82);display:none;align-items:center;justify-content:center;flex-direction:column;gap:16px;z-index:9999;backdrop-filter:blur(6px)}
 #loading.show{display:flex}
-.spinner{width:42px;height:42px;border:4px solid #dbeafe;border-top-color:#2563eb;border-radius:50%;animation:spin .8s linear infinite}
+.spinner{width:46px;height:46px;border:4px solid var(--primary-100);border-top-color:var(--primary);border-radius:50%;animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-.loading-txt{font-size:14px;color:#1e3a8a;font-weight:600}
+.loading-txt{font-size:14px;color:var(--primary-600);font-weight:600}
 
-/* ═══ WORKSHEET PREVIEW (used by html2canvas) ═══ */
+/* ═══ WORKSHEET RENDER (html2canvas) — giữ nguyên ═══ */
 #ws-render{
   position:absolute;left:-9999px;top:0;
-  width:794px;
-  height:1123px; /* exact A4 at 96dpi */
-  background:#fff;
+  width:794px;height:1123px;background:#fff;
   padding:36px 44px 32px 44px;
-  font-family:'Lexend',sans-serif;
-  color:#000;
-  display:flex;
-  flex-direction:column;
-  overflow:hidden;
+  font-family:'Lexend',sans-serif;color:#000;
+  display:flex;flex-direction:column;overflow:hidden;
 }
 .ws-heading{text-align:center;border-bottom:3px solid #000;padding-bottom:12px;margin-bottom:16px;flex-shrink:0}
 .ws-label-sm{font-size:10px;letter-spacing:3.5px;text-transform:uppercase;color:#555;margin-bottom:6px;font-weight:400}
@@ -102,17 +239,24 @@ textarea{resize:vertical}
 .ws-tbl tr:nth-child(even) td{background:#f5f5f5}
 .ws-footer-row{flex-shrink:0;margin-top:10px;border-top:1px solid #ccc;padding-top:8px;display:flex;justify-content:space-between;font-size:11px;color:#666;font-weight:400}
 
-/* ═══ UI PREVIEW ═══ */
-.preview-box{background:#fff;border-radius:14px;box-shadow:0 4px 24px rgba(37,99,235,.09);padding:28px 32px}
-.preview-note{font-size:9px;color:#94a3b8;text-align:center;margin-bottom:14px;letter-spacing:1.5px;text-transform:uppercase;font-weight:500}
+/* ───── UI Preview (giấy A4) ───── */
+.preview-wrap{
+  background:linear-gradient(180deg,#e9edf7,#dfe5f3);border:1px solid var(--line);border-radius:var(--radius);
+  padding:22px 16px 26px;margin-top:6px;
+}
+.preview-note{font-size:11px;color:var(--ink-2);text-align:center;margin-bottom:14px;letter-spacing:2px;text-transform:uppercase;font-weight:600}
+.preview-box{
+  background:#fff;border-radius:6px;padding:30px 34px;max-width:760px;margin:0 auto;
+  box-shadow:0 2px 4px rgba(15,23,42,.06),0 18px 40px -10px rgba(15,23,42,.25);
+}
 .ui-ws-heading{text-align:center;border-bottom:3px solid #000;padding-bottom:10px;margin-bottom:16px}
 .ui-ws-label{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:#666;margin-bottom:4px;font-weight:400}
-.ui-ws-title{font-size:20px;font-weight:800}
-.ui-inforow{display:flex;gap:20px;border-bottom:1px solid #bbb;padding-bottom:13px;margin-bottom:15px;font-size:13px}
+.ui-ws-title{font-size:20px;font-weight:800;color:#000}
+.ui-inforow{display:flex;gap:20px;border-bottom:1px solid #bbb;padding-bottom:13px;margin-bottom:15px;font-size:13px;color:#000}
 .ui-inforow div{flex:1}
 .ui-uline{border-bottom:1.5px solid #000;display:inline-block;min-width:80px}
 .ui-dirs{font-size:12px;font-style:italic;color:#444;margin-bottom:12px;font-weight:300}
-.ui-tbl{width:100%;border-collapse:collapse;font-size:14px}
+.ui-tbl{width:100%;border-collapse:collapse;font-size:14px;color:#000}
 .ui-tbl th{background:#ececec;border:2px solid #000;padding:9px 12px;text-align:left;font-size:12px;font-weight:700}
 .ui-tbl td{border:1.5px solid #bbb;padding:0}
 .ui-tbl td.ui-num{text-align:center;color:#777;font-size:12px;width:36px;padding:14px 4px}
@@ -120,6 +264,20 @@ textarea{resize:vertical}
 .ui-tbl td.ui-blank{padding:14px 12px;min-height:44px}
 .ui-tbl tr:nth-child(even) td{background:#f7f7f7}
 .ui-footer{margin-top:14px;border-top:1px solid #ccc;padding-top:8px;display:flex;justify-content:space-between;font-size:11px;color:#777}
+
+/* ───── Responsive ───── */
+@media (max-width:680px){
+  .hdr-inner{padding:12px 14px}
+  main{padding:20px 14px 48px}
+  .card{padding:18px 16px}
+  .grid2,.grid3{grid-template-columns:1fr}
+  .mode-toggle{grid-template-columns:1fr}
+  .set-card{flex-direction:column;align-items:stretch}
+  .set-actions{justify-content:flex-end}
+  .preview-box{padding:20px 14px}
+  .ui-inforow{flex-direction:column;gap:8px}
+  .hdr-new-label{display:none}
+}
 </style>
 </head>
 <body>
@@ -132,8 +290,15 @@ textarea{resize:vertical}
 <!-- ═══ HOME ═══ -->
 <div id="view-home" class="view active">
   <header>
-    <div><div class="logo">📋 VocabSheet</div><div class="subtitle">Tạo worksheet từ vựng tiếng Anh</div></div>
-    <button class="btn btn-green" onclick="goCreate()">＋ Tạo bộ từ mới</button>
+    <div class="hdr-inner">
+      <div class="brand">
+        <div class="brand-mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M9 7h7M9 11h5"/></svg>
+        </div>
+        <div><div class="logo">Vocab<span>Sheet</span></div><div class="subtitle">Tạo worksheet từ vựng tiếng Anh</div></div>
+      </div>
+      <button class="btn btn-blue btn-lg" onclick="goCreate()">＋ <span class="hdr-new-label">Tạo bộ từ mới</span></button>
+    </div>
   </header>
   <main><div id="home-content"></div></main>
 </div>
@@ -141,43 +306,51 @@ textarea{resize:vertical}
 <!-- ═══ FORM (create/edit) ═══ -->
 <div id="view-form" class="view">
   <header>
-    <div><div class="logo">📋 VocabSheet</div><div class="subtitle" id="form-subtitle">Tạo bộ từ mới</div></div>
+    <div class="hdr-inner">
+      <div class="brand">
+        <div class="brand-mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M9 7h7M9 11h5"/></svg>
+        </div>
+        <div><div class="logo">Vocab<span>Sheet</span></div><div class="subtitle" id="form-subtitle">Tạo bộ từ mới</div></div>
+      </div>
+      <button class="btn-outline" onclick="goHome()">← Trang chủ</button>
+    </div>
   </header>
   <main>
     <div class="card">
-      <div class="section-title">📝 Tên bộ từ</div>
+      <div class="section-title"><span class="num">1</span>Tên bộ từ</div>
       <input type="text" id="input-name" placeholder="Ví dụ: Unit 14 – Daily Activities">
     </div>
     <div class="card">
-      <div class="section-title">📥 Nhập từ vựng</div>
-      <div class="info-box" style="margin-bottom:12px">
-        💡 <strong>Cột A</strong> = nội dung hiện cho học sinh thấy (tiếng Anh hoặc tiếng Việt đều được).<br>
+      <div class="section-title"><span class="num">2</span>Nhập từ vựng</div>
+      <div class="info-box" style="margin-bottom:14px">
+        <strong>Cột A</strong> = nội dung hiện cho học sinh thấy (tiếng Anh hoặc tiếng Việt đều được).<br>
         <strong>Cột B</strong> = bản dịch / nghĩa (tùy chọn — dùng khi muốn xuất cả 2 chiều).<br>
-        <span style="font-size:11px;opacity:.8">Cách nhập: <code>noon - buổi trưa</code> &nbsp;|&nbsp; <code>Bạn lau sàn khi nào?</code> &nbsp;|&nbsp; <code>clean - sạch sẽ</code></span>
+        <span style="opacity:.85">Cách nhập: <code>noon - buổi trưa</code> &nbsp;·&nbsp; <code>Bạn lau sàn khi nào?</code> &nbsp;·&nbsp; <code>clean - sạch sẽ</code></span>
       </div>
       <textarea id="input-words" rows="7" placeholder="Ví dụ nhập tiếng Anh:&#10;noon - buổi trưa&#10;morning - buổi sáng&#10;&#10;Hoặc nhập tiếng Việt:&#10;Bạn lau sàn khi nào?&#10;Mẹ bạn làm gì vào buổi tối?"></textarea>
       <div id="form-error" class="err" style="display:none"></div>
-      <div class="flex" style="margin-top:11px">
+      <div class="flex" style="margin-top:14px">
         <button class="btn btn-blue" onclick="addWords()">➕ Thêm từ</button>
         <button class="btn btn-red" onclick="clearWords()">🗑 Xóa hết</button>
       </div>
     </div>
     <div class="card" id="word-list-card" style="display:none">
-      <div class="section-title" id="word-count-title">📚 Danh sách từ</div>
+      <div class="section-title" id="word-count-title"><span class="num">3</span>Danh sách từ</div>
       <div id="word-tags"></div>
       <div class="divider flex" style="justify-content:space-between;flex-wrap:wrap;gap:10px">
         <div class="flex">
-          <button class="btn btn-green" id="save-btn" onclick="saveSet()">💾 Lưu bộ từ</button>
-          <button class="btn-outline" onclick="goHome()">← Hủy</button>
+          <button class="btn btn-green btn-lg" id="save-btn" onclick="saveSet()">💾 Lưu bộ từ</button>
+          <button class="btn-outline" onclick="goHome()">Hủy</button>
         </div>
-        <button class="btn" style="background:#7c3aed" onclick="copyAllWords()" id="copy-btn">📋 Copy tất cả từ</button>
+        <button class="btn btn-violet" onclick="copyAllWords()" id="copy-btn">📋 Copy tất cả từ</button>
       </div>
-      <div id="copy-area-wrap" style="display:none;margin-top:12px">
-        <div class="lbl" style="margin-bottom:6px">📄 Toàn bộ từ vựng (có thể chọn &amp; copy)</div>
+      <div id="copy-area-wrap" style="display:none;margin-top:14px">
+        <div class="lbl">Toàn bộ từ vựng (có thể chọn &amp; copy)</div>
         <textarea id="copy-area" rows="8" readonly
-          style="background:#f8faff;border:1.5px solid #c7d6f7;border-radius:8px;padding:10px 12px;font-family:'Lexend',sans-serif;font-size:13px;width:100%;resize:vertical;color:#1e3a8a;cursor:text"
+          style="background:#f8fafc;color:#3730a3;cursor:text"
           onclick="this.select()"></textarea>
-        <div style="font-size:11px;color:#64748b;margin-top:4px">💡 Click vào ô trên để chọn tất cả, rồi Ctrl+C để copy</div>
+        <div style="font-size:12px;color:var(--ink-2);margin-top:6px">💡 Click vào ô trên để chọn tất cả, rồi Ctrl+C để copy</div>
       </div>
     </div>
     <div id="form-back" style="text-align:right;display:none;margin-top:4px">
@@ -189,38 +362,43 @@ textarea{resize:vertical}
 <!-- ═══ PRINT ═══ -->
 <div id="view-print" class="view">
   <header>
-    <div><div class="logo">📋 VocabSheet</div><div class="subtitle">Xuất worksheet PDF</div></div>
+    <div class="hdr-inner">
+      <div class="brand">
+        <div class="brand-mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M9 7h7M9 11h5"/></svg>
+        </div>
+        <div><div class="logo">Vocab<span>Sheet</span></div><div class="subtitle">Xuất worksheet PDF</div></div>
+      </div>
+      <button class="btn-outline" onclick="goHome()">← Quay lại</button>
+    </div>
   </header>
   <main>
     <div class="card">
-      <div class="section-title">⚙️ Tùy chỉnh</div>
+      <div class="section-title">⚙️ Tùy chỉnh worksheet</div>
 
-      <!-- Worksheet mode -->
-      <div class="lbl" style="margin-bottom:6px">Loại worksheet</div>
+      <div class="lbl">Loại worksheet</div>
       <div class="mode-toggle">
         <button class="mode-btn active" id="mode-btn-wm" onclick="setMode('wm')">🔤 Từ tiếng Anh → Học sinh điền nghĩa tiếng Việt</button>
         <button class="mode-btn" id="mode-btn-mw" onclick="setMode('mw')">📖 Nghĩa tiếng Việt → Học sinh viết từ / câu tiếng Anh</button>
       </div>
-      <div id="mode-warning" class="err" style="display:none;background:#fffbeb;color:#92400e;border:none"></div>
+      <div id="mode-warning" class="err" style="display:none;background:var(--amber-50);color:#92400e;border-color:#fde68a"></div>
 
-      <!-- Shuffle option -->
-      <div style="margin-top:10px;display:flex;align-items:center;gap:10px;background:#f8f7ff;border:1.5px solid #ddd6fe;border-radius:10px;padding:10px 14px">
-        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;font-weight:600;color:#5b21b6;user-select:none">
-          <input type="checkbox" id="shuffle-toggle" onchange="shuffleChanged()" style="width:16px;height:16px;cursor:pointer;accent-color:#7c3aed">
+      <div class="shuffle-box">
+        <label>
+          <input type="checkbox" id="shuffle-toggle" onchange="shuffleChanged()">
           🔀 Trộn thứ tự từ ngẫu nhiên
         </label>
-        <button class="btn" style="background:#7c3aed;padding:6px 12px;font-size:12px" id="reshuffle-btn" onclick="reshuffleWords()" title="Trộn lại">↺ Trộn lại</button>
+        <button class="btn btn-violet" style="padding:7px 13px;font-size:12px" id="reshuffle-btn" onclick="reshuffleWords()" title="Trộn lại">↺ Trộn lại</button>
       </div>
 
-      <div class="grid2" style="margin-top:10px">
+      <div class="grid3" style="margin-top:16px">
         <div><div class="lbl">Tiêu đề worksheet</div><input type="text" id="pi-title" oninput="updatePreview()"></div>
         <div><div class="lbl">Lớp</div><input type="text" id="pi-class" placeholder="Ví dụ: 4A" oninput="updatePreview()"></div>
-        <div><div class="lbl">Ngày</div><input type="text" id="pi-date" placeholder="Ví dụ: 06/03/2026" oninput="updatePreview()"></div>
+        <div><div class="lbl">Ngày</div><input type="text" id="pi-date" placeholder="06/03/2026" oninput="updatePreview()"></div>
       </div>
 
-      <!-- Custom column labels -->
-      <div style="margin-top:12px;background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:10px;padding:12px 14px">
-        <div style="font-size:12px;font-weight:700;color:#166534;margin-bottom:8px">🏷️ Tên cột trong worksheet</div>
+      <div class="col-box">
+        <div class="col-box-title">🏷️ Tên cột trong worksheet</div>
         <div class="grid2">
           <div>
             <div class="lbl">Cột A — nội dung cho sẵn</div>
@@ -234,31 +412,33 @@ textarea{resize:vertical}
       </div>
 
       <div class="divider flex">
-        <button class="btn btn-green" onclick="downloadPDF()" id="dl-btn">⬇️ Tải PDF</button>
-        <button class="btn-outline" onclick="goHome()">← Quay lại</button>
+        <button class="btn btn-green btn-lg" onclick="downloadPDF()" id="dl-btn">⬇️ Tải PDF</button>
+        <button class="btn-outline" onclick="goHome()">Quay lại</button>
       </div>
     </div>
 
     <!-- UI Preview -->
-    <div class="preview-box">
-      <div class="preview-note">— Xem trước —</div>
-      <div class="ui-ws-heading">
-        <div class="ui-ws-label">English Vocabulary Worksheet</div>
-        <div class="ui-ws-title" id="prev-title">—</div>
-      </div>
-      <div class="ui-inforow">
-        <div><strong>Name:</strong> <span class="ui-uline">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></div>
-        <div><strong>Class:</strong> <span class="ui-uline" id="prev-class">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></div>
-        <div><strong>Date:</strong> <span class="ui-uline" id="prev-date">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></div>
-      </div>
-      <div class="ui-dirs" id="prev-dirs">Directions: Write the Vietnamese meaning of each vocabulary word in the blank column.</div>
-      <table class="ui-tbl">
-        <thead><tr id="prev-thead"></tr></thead>
-        <tbody id="prev-tbody"></tbody>
-      </table>
-      <div class="ui-footer">
-        <span id="prev-total">Total: 0 words</span>
-        <span id="prev-score">Score: _______ / 0</span>
+    <div class="preview-wrap">
+      <div class="preview-note">Xem trước</div>
+      <div class="preview-box">
+        <div class="ui-ws-heading">
+          <div class="ui-ws-label">English Vocabulary Worksheet</div>
+          <div class="ui-ws-title" id="prev-title">—</div>
+        </div>
+        <div class="ui-inforow">
+          <div><strong>Name:</strong> <span class="ui-uline">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></div>
+          <div><strong>Class:</strong> <span class="ui-uline" id="prev-class">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></div>
+          <div><strong>Date:</strong> <span class="ui-uline" id="prev-date">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></div>
+        </div>
+        <div class="ui-dirs" id="prev-dirs">Directions: Write the Vietnamese meaning of each vocabulary word in the blank column.</div>
+        <table class="ui-tbl">
+          <thead><tr id="prev-thead"></tr></thead>
+          <tbody id="prev-tbody"></tbody>
+        </table>
+        <div class="ui-footer">
+          <span id="prev-total">Total: 0 words</span>
+          <span id="prev-score">Score: _______ / 0</span>
+        </div>
       </div>
     </div>
   </main>
@@ -357,7 +537,7 @@ function syncWord(i, field, val) {
 function renderWordTags() {
   const card = document.getElementById("word-list-card");
   const backBtn = document.getElementById("form-back");
-  document.getElementById("word-count-title").textContent = `📚 Danh sách từ (${currentWords.length} từ)`;
+  document.getElementById("word-count-title").innerHTML = `<span class="num">3</span>Danh sách từ (${currentWords.length} từ)`;
   if (currentWords.length === 0) { card.style.display = "none"; backBtn.style.display = "block"; return; }
   card.style.display = "block"; backBtn.style.display = "none";
 
@@ -382,17 +562,19 @@ function renderWordTags() {
     </tr>`).join("");
 
   document.getElementById("word-tags").innerHTML = `
+    <div class="table-scroll">
     <table class="wtable">
       <thead>
         <tr>
-          <th style="width:36px">#</th>
+          <th style="width:40px;text-align:center">#</th>
           <th>Nội dung cho sẵn (Cột A)</th>
-          <th>Bản dịch / Nghĩa (Cột B — tùy chọn)</th>
-          <th style="width:90px">Thao tác</th>
+          <th>Bản dịch / Nghĩa (Cột B)</th>
+          <th style="width:108px">Thao tác</th>
         </tr>
       </thead>
       <tbody>${rows}</tbody>
-    </table>`;
+    </table>
+    </div>`;
 }
 
 function copyAllWords() {
@@ -515,27 +697,33 @@ function renderHome() {
   const el = document.getElementById("home-content");
   if (sets.length === 0) {
     el.innerHTML = `<div class="card empty-state">
-      <div style="font-size:48px;margin-bottom:12px">📚</div>
-      <div style="font-size:19px;font-weight:700;color:#1e3a8a;margin-bottom:7px">Chưa có bộ từ nào</div>
-      <div style="color:#64748b;margin-bottom:20px;font-size:13px">Bắt đầu bằng cách tạo bộ từ đầu tiên!</div>
-      <button class="btn btn-blue" onclick="goCreate()">＋ Tạo bộ từ đầu tiên</button></div>`; return;
+      <div class="empty-ico">📚</div>
+      <div style="font-size:20px;font-weight:700;margin-bottom:6px">Chưa có bộ từ nào</div>
+      <div style="color:var(--ink-2);margin-bottom:22px;font-size:14px">Bắt đầu bằng cách tạo bộ từ đầu tiên của bạn!</div>
+      <button class="btn btn-blue btn-lg" onclick="goCreate()">＋ Tạo bộ từ đầu tiên</button></div>`; return;
   }
-  el.innerHTML = `<div style="font-size:17px;font-weight:700;color:#1e3a8a;margin-bottom:14px">📂 Bộ từ đã lưu (${sets.length})</div>` +
+  el.innerHTML = `<div class="home-top">
+      <div><div class="home-title">Bộ từ của bạn</div><div class="home-count">${sets.length} bộ từ đã lưu</div></div>
+    </div>` +
     sets.map(s => {
       const words = s.words.map(w => typeof w==="string"?w:w.word);
-      const chips = words.slice(0,6).map(w=>`<span class="chip">${w}</span>`).join("");
-      const more = words.length>6?`<span style="font-size:11px;color:#94a3b8;padding:2px 5px">+${words.length-6}</span>`:"";
+      const chips = words.slice(0,6).map(w=>`<span class="chip">${escHtml(w)}</span>`).join("");
+      const more = words.length>6?`<span class="chip-more">+${words.length-6}</span>`:"";
       const hasMeaning = s.words.some(w => typeof w==="object" && w.meaning);
       return `<div class="set-card">
         <div class="set-info">
-          <div class="set-name">${s.name}</div>
-          <div class="set-meta">📅 ${fmtDate(s.createdAt)} &nbsp;·&nbsp; 📝 ${s.words.length} từ ${hasMeaning?'&nbsp;·&nbsp; <span style="color:#16a34a;font-size:11px">✓ có nghĩa TV</span>':''}</div>
+          <div class="set-name">${escHtml(s.name)}</div>
+          <div class="set-meta">
+            <span class="pill">📅 ${fmtDate(s.createdAt)}</span>
+            <span class="pill">📝 ${s.words.length} từ</span>
+            ${hasMeaning?'<span class="pill ok">✓ có nghĩa TV</span>':''}
+          </div>
           <div class="chips">${chips}${more}</div>
         </div>
-        <div class="flex" style="flex-shrink:0;margin-left:12px">
+        <div class="set-actions">
           <button class="btn btn-blue" onclick="goPrint('${s.id}')">📄 Xuất PDF</button>
           <button class="btn btn-amber" onclick="goEdit('${s.id}')">✏️ Sửa</button>
-          <button class="btn btn-red" onclick="deleteSet('${s.id}')">🗑</button>
+          <button class="btn btn-red" onclick="deleteSet('${s.id}')" title="Xóa">🗑</button>
         </div>
       </div>`;
     }).join("");
@@ -582,8 +770,6 @@ function buildRenderContent() {
   const displayWords = getDisplayWords();
   const n     = displayWords.length;
 
-  const rowPct = (100 / n).toFixed(4) + "%";
-  // Calculate explicit pixel height: A4(1123) - padding(68) - heading(78) - inforow(52) - thead(36) - footer(45)
   const FIXED_PX = 68 + 78 + 52 + 36 + 45;
   const rowH = Math.max(36, Math.floor((1123 - FIXED_PX) / n));
 
@@ -608,10 +794,6 @@ function buildRenderContent() {
           <td class="blank-cell" style="background:${bg}"></td>
         </tr>`;
   }).join("");
-
-  const dirs = isWM
-    ? "Directions: Write the Vietnamese meaning of each vocabulary word in the blank column."
-    : "Hướng dẫn: Nhìn vào nghĩa tiếng Việt, viết từ hoặc mẫu câu tiếng Anh tương ứng vào cột bên phải.";
 
   return `
     <div class="ws-heading">
@@ -642,11 +824,9 @@ async function downloadPDF() {
   loading.classList.add("show");
 
   try {
-    // Populate hidden render div
     const renderDiv = document.getElementById("ws-render");
     renderDiv.innerHTML = buildRenderContent();
 
-    // Wait for fonts to load
     await document.fonts.ready;
     await new Promise(r => setTimeout(r, 300));
 
